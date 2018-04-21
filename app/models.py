@@ -1,6 +1,6 @@
 # _*_coding:utf-8_*_
 
-from app import db
+from app import db, login_manager
 from datetime import datetime
 from werkzeug.security import check_password_hash,generate_password_hash
 from flask_login import UserMixin
@@ -54,3 +54,8 @@ class User(UserMixin,db.Model):
         self.confirmed = True
         db.session.add(self)
         return True
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

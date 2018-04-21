@@ -26,9 +26,12 @@
                 <li><a href="#">register</a></li>
                 </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Login in</a></li>
-                <li><a href="#}">Login out </a></li>
-
+{#                        判断是否已经登录#}
+                {% if current_user.is_authenticated %}
+                <li><a href="#">Logout</a></li>
+                {% else %}
+                <li><a href="#">Login </a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
