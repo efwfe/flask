@@ -7,7 +7,6 @@ from app.models import User, Role
 app = create_app('develop')
 
 manager = Manager(app)
-
 migrate = Migrate(app,db)
 manager.add_command('db',MigrateCommand)
 

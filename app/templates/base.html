@@ -23,14 +23,14 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="#">register</a></li>
+                <li><a href="{{ url_for('auth.register') }}">register</a></li>
                 </ul>
             <ul class="nav navbar-nav navbar-right">
 {#                        判断是否已经登录#}
                 {% if current_user.is_authenticated %}
-                <li><a href="#">Logout</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                 {% else %}
-                <li><a href="#">Login </a></li>
+                <li><a href="{{ url_for('auth.login') }}">Login </a></li>
                 {% endif %}
             </ul>
         </div>
