@@ -78,15 +78,21 @@ def reconfirm():
     return redirect(url_for('auth.index'))
 
 # 用户资料展示
-@auth.route('/userinfo')
+@auth.route('/userinfo',methods=['GET','POST'])
 @login_required
 def user_info():
     user = User.query.filter(User.name==current_user.name).first()
     form = UserInfo()
-    form.name.data = user.name
-    form.email.data= user.email
+    if form.validate_on_submit():
+        user.name = form.name.data
+        user.email = form.email.data
+        db.session.add(user)
+        db.session.commit()
+        flash(u'资料已更新')
+        return redirect(url_for('auth.user_info'))
+    form.email.data=user.email
+    form.name.data =user.name
     return render_template('auth/userinfo.html',form=form)
-
 
 # 用户资料修改
 

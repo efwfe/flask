@@ -69,6 +69,12 @@ class ChangeEmailForm(FlaskForm):
             raise ValidationError('Email already registered.')
 
 class UserInfo(FlaskForm):
-    name = StringField(u'用户名:')
-    email = StringField(u'电子邮箱:')
+    name = StringField(u'用户名:',validators=[DataRequired(),
+                                                   length(2, 64),
+                                                   Regexp('^.*$', 0,
+                                                          'Usernames must have only letters, '
+                                                          'numbers, dots or underscores')])
+    email = StringField(u'电子邮箱:',validators=[DataRequired(), length(6, 64),
+                                                 Email()])
     # comfirmed = BooleanField(u'认证:')
+    submit =SubmitField(u"提交")
