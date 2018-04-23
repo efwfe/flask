@@ -1,2 +1,2 @@
 Welcome to Greenland,{{ user.name }} ,
-<a href="{{ url_for('auth.confirm', token=token, _external=True) }}">Click me</a>
+<a href="{{ url_for('auth.check_confirm', token=token, _external=True) }}">Click me</a>

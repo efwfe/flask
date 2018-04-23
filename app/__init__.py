@@ -26,4 +26,7 @@ def create_app(config_type):
     from auth import auth
     app.register_blueprint(auth)
 
+    from movies import douban
+    app.register_blueprint(douban)
+
     return app

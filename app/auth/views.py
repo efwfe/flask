@@ -7,12 +7,8 @@ from app.models import User
 from ..auth import auth
 from forms import *
 from ..mail import send_email
-#
 
 
-@auth.route('/')
-def index():
-    return render_template('index.html')
 
 # 登录
 @auth.route('/login',methods=['GET','POST'])
@@ -21,11 +17,9 @@ def login():
     if form.validate_on_submit():
         # check user in database?
         user = User.query.filter_by(email=form.email.data).first()
-        print(user)
         if user is not None and user.verify_password(form.password.data):
-            print(user.verify_password(form.password.data))
             login_user(user, form.remember_me.data)
-            return redirect(request.args.get('next')or url_for('auth.index'))
+            return redirect(request.args.get('next')or url_for('douban.douban'))
         flash(u'账号或者密码错误') # 中文编码报错的问题
     return render_template('auth/login.html',form = form)
 
@@ -35,7 +29,7 @@ def login():
 def logout():
     logout_user()
     flash(u'您已登出，欢迎再次访问')
-    return redirect(url_for('auth.index'))
+    return redirect(url_for('douban.douban'))
 
 # 注册
 @auth.route('/register',methods=['GET','POST'])
@@ -60,15 +54,16 @@ def register():
 @login_required
 def check_confirm(token):
     if current_user.confirmed:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('douban.douban'))
     if current_user.confirm(token):
         flash('You have confirmed your account .Thanks!')
     else:
         flash(u'链接已过期，请点击一下链接获取验证码')
         return redirect(url_for('auth.unconfirm'))
-    return redirect(url_for('auth.index'))
+    return redirect(url_for('douban.douban'))
 
 @auth.route('/unconfirmed')
+@login_required
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
         return render_template('auth/unconfirmed.html')
@@ -82,12 +77,18 @@ def reconfirm():
     flash('A new mail had sent to you ')
     return redirect(url_for('auth.index'))
 
-
-@auth.route('/secret')
+# 用户资料展示
+@auth.route('/userinfo')
 @login_required
-def secret():
-    flash('this is a secret page')
-    return render_template('index.html')
+def user_info():
+    user = User.query.filter(User.name==current_user.name).first()
+    form = UserInfo()
+    form.name.data = user.name
+    form.email.data= user.email
+    return render_template('auth/userinfo.html',form=form)
+
+
+# 用户资料修改
 
 @auth.route('/change-password', methods=['GET', 'POST'])
 @login_required
@@ -167,3 +168,5 @@ def change_email(token):
     else:
         flash('Invalid request.')
     return redirect(url_for('main.index'))
+
+
