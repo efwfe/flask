@@ -7,7 +7,7 @@ from forms import CommentForm
 from app.models import ComingMovies,Comment
 from . import douban
 
-@douban.route('/',methods=['GET'])
+@douban.route('/')
 @login_required
 def douban_index():
     form = CommentForm()

@@ -11,7 +11,8 @@
                     <div class="modal-content">
                              <p>往期评论:</p>
                             {% for talk in movie.commented %}
-                                {{ talk.comment_text }}
+
+                                <h3>{{ talk.user.name }}评论：{{ talk.comment_text }}</h3>
                                 {% endfor %}
                         <form method="POST" action="/{{ movie.title }}">
                             {{ form.csrf_token }}
