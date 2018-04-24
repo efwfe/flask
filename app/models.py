@@ -14,7 +14,6 @@ class Permission:
     MODERATE = 8
     ADMIN = 16
 
-
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer,primary_key=True)
@@ -45,6 +44,12 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
+class Comment(db.Model):
+    id = db.Column(db.Integer,primary_key=True,autoincrement=True)
+    comment_text = db.Column(db.Text())
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    movie_id = db.Column(db.Integer,db.ForeignKey('in_movies.id'))
+
 class User(UserMixin,db.Model):
     # __table__ = 'users'
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
@@ -53,6 +58,7 @@ class User(UserMixin,db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
     confirmed = db.Column(db.Boolean, default=False)
+    user_comment = db.relationship('Comment',foreign_keys=[Comment.user_id],backref=db.backref('user',lazy='joined'),lazy='dynamic')
 
 
     @property
@@ -94,6 +100,17 @@ class User(UserMixin,db.Model):
         return '<User %r>' % self.name
 
 
+class ComingMovies(db.Model):
+    __tablename__ = 'in_movies'
+    id = db.Column(db.Integer,primary_key=True,autoincrement=True)
+    image = db.Column(db.String(255),nullable=True)
+    average = db.Column(db.Float)
+    alt = db.Column(db.String(255))
+    title = db.Column(db.String(255))
+    commented = db.relationship('Comment',foreign_keys=[Comment.movie_id],backref=db.backref('movie',lazy='joined'),lazy='dynamic')
+
+
+
 class AnonymousUser(AnonymousUserMixin):
     def can(self,permissions):
         return False
@@ -106,13 +123,3 @@ login_manager.anonymous_user = AnonymousUser
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-
-
-class ComingMovies(db.Model):
-    __tablename__ = 'in_movies'
-    id = db.Column(db.Integer,primary_key=True,autoincrement=True)
-    image = db.Column(db.String(255),nullable=True)
-    average = db.Column(db.Float)
-    alt = db.Column(db.String(255))
-    title = db.Column(db.String(255))

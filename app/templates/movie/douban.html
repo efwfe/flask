@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
 {% block page_content %}
+
 <div class="row " >
       {% for movie in movies %}
           <div id='mv' style="float: left;height: 400px;margin: 8px;text-align: center;" >
@@ -9,7 +9,16 @@
                 <div class="modal fade bs-example-modal-lg-{{  movie.title}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
-                        hahaha
+                             <p>往期评论:</p>
+                            {% for talk in movie.commented %}
+                                {{ talk.comment_text }}
+                                {% endfor %}
+                        <form method="POST" action="/{{ movie.title }}">
+                            {{ form.csrf_token }}
+                            {{ form.title.label }}{{ movie.title }}
+                            {{ form.text.label }}{{ form.text }}
+                            <input type="submit" value="'提交" >
+                        </form>
                     </div>
                   </div>
                 </div>
