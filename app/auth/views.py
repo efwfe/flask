@@ -85,12 +85,12 @@ def user_info():
     form = UserInfo()
     if form.validate_on_submit():
         user.name = form.name.data
-        user.email = form.email.data
+        # user.email = form.email.data
         db.session.add(user)
         db.session.commit()
         flash(u'资料已更新')
         return redirect(url_for('auth.user_info'))
-    form.email.data=user.email
+    # form.email.data=user.email
     form.name.data =user.name
     return render_template('auth/userinfo.html',form=form)
 

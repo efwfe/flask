@@ -34,29 +34,25 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse col-lg-offset-8" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/">电影 <span class="sr-only">(current)</span></a></li>
+        <li class="active"><a href="/">电影<span class="sr-only">(current)</span></a></li>
         <li><a href="#">游戏</a></li>
-          <li><a href="#">美剧</a></li>
       </ul>
-      <form class="navbar-form navbar-left">
+      <form class="navbar-form navbar-left" >
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
+          <input type="text"  id = "content_search" class="form-control" placeholder="Search">
         </div>
-        <button type="submit" class="btn btn-default">提交</button>
+        <button type="submit" id = 'btn_search' class="btn btn-default">提交</button>
       </form>
-      <ul class="nav navbar-nav navbar-right col-md-2">
+      <ul class="nav navbar-nav navbar-right col-md-1">
           {% if current_user.name %}
               <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ current_user.name }}<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="/userinfo">个人中心</a></li>
-{#                    <li><a href="#">Something else here</a></li>#}
                     <li role="separator" class="divider"></li>
-{#                    <li><a href="#">Separated link</a></li>#}
                       <li><a href="{{ url_for('auth.logout')}}">退出</a></li>
                   </ul>
                 </li>
-
           {% else: %}
                 <li><a href="{{ url_for('auth.register') }}">注册</a></li>
                 <li><a href="{{ url_for('auth.login') }}">登录</a></li>
@@ -65,8 +61,8 @@
 
 
       </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+    </div>
+  </div>
 </nav>
 {% endblock navbar %}
 
@@ -89,4 +85,20 @@
 
 {% block scripts %}
 {{ super() }}
+    <script>
+        var btn_search = document.getElementById('btn_search');
+    btn_search.onclick = function(){
+        var keyword = document.getElementById('content_search').value;
+
+        if (keyword){
+             {#$.get("127.0.0.1:8000"+"/search?"+keyword);#}
+            alert("127.0.0.1:8000"+"/search?"+keyword);
+        }
+
+    }
+    </script>
+
+
+
+
 {% endblock %}

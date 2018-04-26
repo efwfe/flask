@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 {% block page_content %}
+{% block head %}
+{{ super() }}
+    <style>
+    .comment_area{
+        width: 800px;
+        height: 150px;
+        resize:none;
+    }
+    .btn_comment{
+        float: right;
+    }
+    </style>
+{% endblock %}
 
 <div class="row " >
       {% for movie in movies %}
@@ -8,17 +21,16 @@
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg-{{  movie.title}}">{{ movie.title }}  评分{{ movie.average }}</button>
                 <div class="modal fade bs-example-modal-lg-{{  movie.title}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                   <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                             <p>往期评论:</p>
+                    <div class="modal-content" style="text-align:left;padding: 50px;">
+                             <p><b>过往评论:</b></p>
                             {% for talk in movie.commented %}
-
-                                <h3>{{ talk.user.name }}评论：{{ talk.comment_text }}</h3>
+                                <h5>{{ talk.user.name }} ：{{ talk.comment_text }}</h5>
                                 {% endfor %}
                         <form method="POST" action="/{{ movie.title }}">
                             {{ form.csrf_token }}
                             {{ form.title.label }}{{ movie.title }}
-                            {{ form.text.label }}{{ form.text }}
-                            <input type="submit" value="'提交" >
+                            {{ form.text.label }}{{ form.text(cols=20,row=30,class='comment_area') }}
+                            <input type="submit" class='btn_comment' value="提交" >
                         </form>
                     </div>
                   </div>

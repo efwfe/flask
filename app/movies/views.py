@@ -1,5 +1,5 @@
 # _*_coding:utf-8_*_
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from flask_login import current_user,login_required
 from sqlalchemy import desc
 from app import db
@@ -30,3 +30,6 @@ def comment_post(movie):
         db.session.commit()
 
         return redirect('/')
+    flash(u'请输入内容')
+    return redirect('/#')
+
