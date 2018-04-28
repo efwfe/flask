@@ -43,7 +43,7 @@
         </div>
         <button type="submit" id = 'btn_search' class="btn btn-default">提交</button>
       </form>
-      <ul class="nav navbar-nav navbar-right col-md-1">
+      <ul class="nav navbar-nav navbar-right col-md-2">
           {% if current_user.name %}
               <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ current_user.name }}<span class="caret"></span></a>
@@ -57,9 +57,6 @@
                 <li><a href="{{ url_for('auth.register') }}">注册</a></li>
                 <li><a href="{{ url_for('auth.login') }}">登录</a></li>
           {% endif %}
-
-
-
       </ul>
     </div>
   </div>

@@ -1,9 +1,96 @@
 {% extends 'base.html' %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="../../static/css/animate.css">
+    <style>
 
+        .hero-logo-circle {
+            width: 400px;
+            height: 350px;
+            position: absolute;
+            left: 200px;
+            top: 100px;
+            animation: hero-logo-circle 1s cubic-bezier(0.4, 0, 1, 1) infinite;
+            will-change: transform;
+            user-select: none;
+        }
+
+        .hero-logo-circle:nth-child(1) {
+            animation-duration: 30s
+        }
+
+        .hero-logo-circle:nth-child(2) {
+            animation-duration: 20s
+        }
+
+        .hero-logo-circle:nth-child(3) {
+            animation-duration: 40s
+        }
+
+        .hero-logo-circle:nth-child(4) {
+            animation-duration: 60s
+        }
+
+        .hero-logo-circle:nth-child(5) {
+            animation-duration: 70s
+        }
+
+        .hero-logo-circle:nth-child(6) {
+            animation-duration: 80s
+        }
+
+        .hero-logo-circle:nth-child(7) {
+            animation-duration: 90s
+        }
+
+        .hero-logo-circle:nth-child(8) {
+            animation-duration: 100s
+        }
+
+        .hero-logo-circle:nth-child(9) {
+            animation-duration: 105s
+        }
+
+        .hero-logo-circle:nth-child(10) {
+            animation-duration: 120s
+        }
+        .verify{width: 100px;height: 50px;}
+        .inp{width: 300px; height: 30px}
+        @keyframes hero-logo-circle {
+            100% {
+                transform: rotate(1turn)
+            }
+        }
+    </style>
+{% endblock %}
 {% block page_content %}
-    <div class="col-lg-4">
-{% import 'bootstrap/wtf.html' as wtf %}
-{{ wtf.quick_form(form) }}
-
+    <div class="col-lg-4" style="margin-top: 90px;padding: 20px;border: #f9f9f9 2px solid">
+<form action="{{ url_for("auth.register") }}" method="post">
+            {{ form.csrf_token }}
+    {{ form.email.label }}<br>
+        {{ form.email( class="inp") }}<br>
+    {{ form.username.label }}<br>
+        {{ form.username( class="inp") }}<br>
+    {{ form.password.label }}<br>
+        {{ form.password ( class="inp")}}<br>
+        {{ form.password2.label }}<br>
+        {{ form.password2 ( class="inp")}}<br>
+    {{ form.verify.label }} <img class='verify' src="/verify" ><br>
+        {{ form.verify( class="inp") }}<br>
+            {{ form.submit }}
+            </form>
     </div>
+
+     <div class="hero-logo-circles col-md-6">
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-red-semi-085b4e44d49b2ffe935cc1b2b3094ce8.svg" alt="Index portal red semi" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-red-be5d1b8a52c13bf286560aba3e4c8c30.svg" alt="Index portal red" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-orange-semi-d2010f0f8e41e03dbf2b5c52166abe4b.svg" alt="Index portal orange semi" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-orange-b3bddfb758b91d22f43d0e14ed8e29da.svg" alt="Index portal orange" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-yellow-semi-545681fe77ff01659d472bd379a9f38b.svg" alt="Index portal yellow semi" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-yellow-ff207a58ad4f450ea9ac0e17224b39f1.svg" alt="Index portal yellow" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-green-semi-2d5bc571ee90e710d93f7ae7ddd06e85.svg" alt="Index portal green semi" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-green-6ab85a1e7343a232273868031b242806.svg" alt="Index portal green" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-blue-semi-7333f1323549be50644411b691b173dd.svg" alt="Index portal blue semi" />
+          <img class="hero-logo-circle" src="../../static/imgs/index-portal-blue-92fc2c151190795bd0147c03d4fb8352.svg" alt="Index portal blue" />
+      </div>
 {% endblock %}

@@ -1,5 +1,5 @@
 # _*_coding:utf-8_*_
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, session, make_response
 from flask_login import login_required, login_user, logout_user, current_user
 
 from app import db
@@ -7,20 +7,36 @@ from app.models import User
 from ..auth import auth
 from forms import *
 from ..mail import send_email
+from ..utils.captcha import captcha
 
-
+# 验证码
+@auth.route('/verify')
+def verify():
+    catp = captcha.Captcha().instance()
+    name, text, value = catp.generate_captcha()
+    session[text.upper()] = text
+    response = make_response(value)
+    response.headers['Content-Type'] = 'image/jpeg'
+    return  response
 
 # 登录
 @auth.route('/login',methods=['GET','POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        # check user in database?
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is not None and user.verify_password(form.password.data):
-            login_user(user, form.remember_me.data)
-            return redirect(request.args.get('next')or url_for('douban.douban'))
-        flash(u'账号或者密码错误') # 中文编码报错的问题
+        # check verify
+        code = form.verify.data
+        if session[code.upper().decode()] == code:
+            # check user in database
+            user = User.query.filter_by(email=form.email.data).first()
+            if user is not None and user.verify_password(form.password.data):
+                login_user(user, form.remember_me.data)
+                return redirect(request.args.get('next')or url_for('douban.douban_index'))
+            flash(u'账号或者密码错误') # 中文编码报错的问题
+        else:
+            flash(u'验证码错误')
+            return render_template('auth/login.html',form = form)
+
     return render_template('auth/login.html',form = form)
 
 # 登出
@@ -29,25 +45,31 @@ def login():
 def logout():
     logout_user()
     flash(u'您已登出，欢迎再次访问')
-    return redirect(url_for('douban.douban'))
+    return redirect(url_for('auth.login'))
 
 # 注册
 @auth.route('/register',methods=['GET','POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        user=User(email=form.eamil.data,name=form.username.data,password=form.password.data)
-        try:
-            db.session.add(user)
-            db.session.commit()
-        except:
-            db.session.rollback()
-            flash(u'邮箱已经被占用')
-            return redirect(url_for('auth.register'))
-        token = user.generate_condirmation_token()
-        send_email(user.email,'请认证您的邮箱:','mail/new_user',user=user,token=token)
-        return redirect(url_for('auth.login'))
-    return render_template('auth/login.html', form=form)
+        code = form.verify.data
+        if session[code.upper().decode()] ==form.verify.data:
+            user=User(email=form.email.data,name=form.username.data,password=form.password.data)
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                flash(u'邮箱已经被占用')
+                return redirect(url_for('auth.register'))
+            token = user.generate_condirmation_token()
+            send_email(user.email,'请认证您的邮箱:','mail/new_user',user=user,token=token)
+            return redirect(url_for('auth.login'))
+        else:
+            flash(u'验证码错误')
+            return render_template('auth/register.html', form=form)
+    flash(u"填写不完整")
+    return render_template('auth/register.html', form=form)
 
 # 认证邮箱
 @auth.route('/confirm/<token>')

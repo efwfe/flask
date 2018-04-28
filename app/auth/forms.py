@@ -1,5 +1,5 @@
 # _*_coding:utf-8_*_
-
+from flask import session
 from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField,BooleanField,PasswordField
 from wtforms.validators import DataRequired, length, Email, Regexp, EqualTo, ValidationError
@@ -7,23 +7,26 @@ from flask_wtf import FlaskForm
 from ..models import User,Role
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), length(1, 64), Email()])
-    password = PasswordField('password', validators=[DataRequired()])
-    remember_me = BooleanField('keep me logged in')
-    submit = SubmitField('Login In')
+    email = StringField(u'邮箱', validators=[DataRequired(), length(1, 64), Email()])
+    password = PasswordField(u'密码', validators=[DataRequired()])
+    verify = StringField(u"验证码",validators=[DataRequired()])
+    remember_me = BooleanField(u'保持登录状态')
+    submit = SubmitField(u'提交')
+
 
 
 class RegisterForm(FlaskForm):
-    eamil = StringField('Email', validators=[DataRequired(), Email(), length(1, 64)])
-    username = StringField('Username', validators=[DataRequired(),
+    email = StringField(u'邮箱', validators=[DataRequired(), Email(), length(1, 64)])
+    username = StringField(u'用户名', validators=[DataRequired(),
                                                    length(1, 64),
                                                    Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                                                           'Usernames must have only letters, '
                                                           'numbers, dots or underscores')])
-    password = PasswordField('Password',
+    password = PasswordField(u'密码',
                              validators=[DataRequired(), EqualTo('password2', message='password is not match '), ])
-    password2 = PasswordField('confirm password', validators=[DataRequired()])
-    submit = SubmitField('Register')
+    password2 = PasswordField(u'确认密码', validators=[DataRequired()])
+    verify = StringField(u"验证码", validators=[DataRequired()])
+    submit = SubmitField(u'注册')
 
     # 设置验证邮箱
     def validate_email(self, field):
