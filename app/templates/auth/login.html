@@ -54,8 +54,7 @@
         .hero-logo-circle:nth-child(10) {
             animation-duration: 120s
         }
-        .verify{width: 100px;height: 40px;}
-        .inp{width: 300px; height: 30px;margin: 5px}
+        .verify{width: 100px;height: 35px;margin: 5px;}
         @keyframes hero-logo-circle {
             100% {
                 transform: rotate(1turn)
@@ -69,13 +68,13 @@
         <form action="{{ url_for("auth.login") }}" method="post">
             {{ form.csrf_token }}
     {{ form.email.label }}<br>
-        {{ form.email( class="inp") }}<br>
+        {{ form.email( class="form-control") }}<br>
     {{ form.password.label }}<br>
-        {{ form.password ( class="inp")}}<br>
+        {{ form.password ( class="form-control")}}
     {{ form.verify.label }} <img class='verify' src="/verify" ><br>
-        {{ form.verify( class="inp") }}<br>
-    {{ form.remember_me.label }}<br>
-        {{ form.remember_me }}<br>
+        {{ form.verify( class="form-control") }}<br>
+    {{ form.remember_me.label }}
+        {{ form.remember_me }}<br><br>
             {{ form.submit }}
             </form>
     </div>

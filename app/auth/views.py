@@ -64,11 +64,12 @@ def register():
                 return redirect(url_for('auth.register'))
             token = user.generate_condirmation_token()
             send_email(user.email,'请认证您的邮箱:','mail/new_user',user=user,token=token)
+            flash(u"请认证邮箱")
             return redirect(url_for('auth.login'))
         else:
             flash(u'验证码错误')
             return render_template('auth/register.html', form=form)
-    flash(u"填写不完整")
+
     return render_template('auth/register.html', form=form)
 
 # 认证邮箱
