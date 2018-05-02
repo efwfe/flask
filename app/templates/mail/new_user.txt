@@ -1,2 +1,3 @@
-Welcome to Paloma,{{ user.name }} ,
-<a href="{{ url_for('auth.check_confirm', token=token, _external=True) }}">Click me</a>
+欢迎来到 Paloma,{{ user.name }} ,
+请点击链接认证邮箱：
+<a href="{{ url_for('auth.check_confirm', token=token, _external=True) }}">认证传送门</a>

@@ -17,10 +17,10 @@ class DevConfig(Config):
     MAIL_PORT = 465
     MAIL_USER_TLS= True
     MAIL_USE_SSL = True
-    FLASK_MAIL_SUBJECT_PREFIX = '[GREENLAND]'
-    MAIL_USERNAME ='471404259@qq.com'
-    MAIL_PASSWORD = 'ftjqeqjsfcwacbdh'
-    FLASK_MAIL_SENDER = '471404259@qq.com'
+    FLASK_MAIL_SUBJECT_PREFIX = '[来自Poloma的认证邮件]'
+    MAIL_USERNAME ="***"
+    MAIL_PASSWORD = "***"
+    FLASK_MAIL_SENDER = "***"
 
 class ProConfig(Config):
     DEBUG=False

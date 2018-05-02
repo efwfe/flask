@@ -88,13 +88,9 @@ class User(UserMixin,db.Model):
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()
         return True
 
-    def can(self,perm):
-        return self.role is not None and self.role.has_permission(perm)
-
-    def is_adminstrator(self):
-        return self.cam(Permission.ADMIN)
 
     def __repr__(self):
         return '<User %r>' % self.name

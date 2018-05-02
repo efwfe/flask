@@ -1,6 +1,7 @@
 # _*_coding:utf-8_*_
-from flask import render_template, flash, redirect, request, url_for, session, make_response
+from flask import render_template, flash, redirect, request, url_for, session, make_response, current_app
 from flask_login import login_required, login_user, logout_user, current_user
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from app import db
 from app.models import User
@@ -14,7 +15,7 @@ from ..utils.captcha import captcha
 def verify():
     catp = captcha.Captcha().instance()
     name, text, value = catp.generate_captcha()
-    session[text.upper()] = text
+    session[unicode(text.upper())] = text
     response = make_response(value)
     response.headers['Content-Type'] = 'image/jpeg'
     return  response
@@ -26,13 +27,22 @@ def login():
     if form.validate_on_submit():
         # check verify
         code = form.verify.data
+        print(code)
         if session[code.upper().decode()] == code:
+
             # check user in database
             user = User.query.filter_by(email=form.email.data).first()
             if user is not None and user.verify_password(form.password.data):
                 login_user(user, form.remember_me.data)
                 return redirect(request.args.get('next')or url_for('douban.douban_index'))
+                # if user.confirmed:
+                #     login_user(user, form.remember_me.data)
+                #     return redirect(request.args.get('next')or url_for('douban.douban_index'))
+                # else:
+                #     flash(u'用户未认证')
+                #     return render_template('auth/login.html', form=form)
             flash(u'账号或者密码错误') # 中文编码报错的问题
+            return render_template('auth/login.html', form=form)
         else:
             flash(u'验证码错误')
             return render_template('auth/login.html',form = form)
@@ -53,7 +63,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         code = form.verify.data
-        if session[code.upper().decode()] ==form.verify.data:
+        if session[unicode(code.upper())] ==form.verify.data:
             user=User(email=form.email.data,name=form.username.data,password=form.password.data)
             try:
                 db.session.add(user)
@@ -63,8 +73,8 @@ def register():
                 flash(u'邮箱已经被占用')
                 return redirect(url_for('auth.register'))
             token = user.generate_condirmation_token()
-            send_email(user.email,'请认证您的邮箱:','mail/new_user',user=user,token=token)
-            flash(u"请认证邮箱")
+            # send_email(user.email,'请认证您的邮箱:','mail/new_user',user=user,token=token)
+            # flash(u"请认证邮箱")
             return redirect(url_for('auth.login'))
         else:
             flash(u'验证码错误')
@@ -74,16 +84,18 @@ def register():
 
 # 认证邮箱
 @auth.route('/confirm/<token>')
-@login_required
 def check_confirm(token):
-    if current_user.confirmed:
-        return redirect(url_for('douban.douban'))
-    if current_user.confirm(token):
-        flash('You have confirmed your account .Thanks!')
-    else:
-        flash(u'链接已过期，请点击一下链接获取验证码')
-        return redirect(url_for('auth.unconfirm'))
-    return redirect(url_for('douban.douban'))
+    s = Serializer(current_app.config['SECRET_KEY'])
+    data = s.loads(token.decode("utf-8"))
+    id = data[u"confirm"]
+    user = User.query.filter_by(id=id).first()
+    if user.confirm(token):
+        flash(u'您已认证邮箱，谢谢')
+        return redirect(url_for("auth.login"))
+
+    return render_template('404.html')
+
+
 
 @auth.route('/unconfirmed')
 @login_required
@@ -92,7 +104,7 @@ def unconfirmed():
         return render_template('auth/unconfirmed.html')
     return redirect(url_for('auth.reconfirm'))
 
-@auth.route('/confirm')
+@auth.route('/reconfirm')
 @login_required
 def reconfirm():
     token = current_user.generate_condirmation_token(),
